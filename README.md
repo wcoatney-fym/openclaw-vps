@@ -47,9 +47,9 @@ cd /docker/openclaw-lynj && docker compose up -d
 ## Current status (2026-06-15)
 
 - ✅ Gateway **healthy** (`running`, config valid).
-- ✅ Slack **bot token** valid → workspace *Team FYM*, bot `crmteambot`.
-- ✅ Slack **app token** (`xapp-`) valid and registered (Socket Mode).
-- ❌ **Slack channel does not connect** — the gateway materializes zero channels despite correct config + loaded plugin. See [docs/slack-troubleshooting.md](docs/slack-troubleshooting.md). Suspected `hvps-openclaw` image bug.
+- ✅ **Slack connected** (Socket Mode) → workspace *Team FYM*, bot `crmteambot`, channel `#crm-openclaw` (`C0BAK76B47M`). Survives cold restart; status `running/connected/healthy`.
+
+**Root cause of the earlier "won't connect":** the channel config was correct, but the third-party `@openclaw/slack` **plugin** must *also* be explicitly enabled (`plugins.entries.slack.enabled: true`, via `openclaw plugins enable slack`). Without it the plugin loads but the channel never materializes. Full write-up: [docs/slack-troubleshooting.md](docs/slack-troubleshooting.md).
 
 ## Repo layout
 

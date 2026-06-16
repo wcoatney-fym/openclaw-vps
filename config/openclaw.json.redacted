@@ -78,6 +78,9 @@
     "entries": {
       "anthropic": {
         "enabled": true
+      },
+      "slack": {
+        "enabled": true
       }
     }
   },
@@ -105,7 +108,7 @@
     "token": "<REDACTED>"
   },
   "meta": {
-    "lastTouchedAt": "2026-06-16T04:38:15.941Z",
+    "lastTouchedAt": "2026-06-16T04:49:10.979Z",
     "lastTouchedVersion": "2026.5.28"
   },
   "session": {

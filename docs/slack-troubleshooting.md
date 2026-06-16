@@ -1,7 +1,29 @@
-# Slack channel will not connect — troubleshooting / support repro
+# Slack channel connection — RESOLVED + troubleshooting log
 
 **Image:** `ghcr.io/hostinger/hvps-openclaw:latest` (OpenClaw `2026.5.28`, commit `e932160`)
 **Date:** 2026-06-15
+
+## ✅ RESOLUTION
+The channel config was correct, but the npm-installed `@openclaw/slack` **channel plugin** was never enabled, so the gateway loaded it but never materialized the channel. Fix:
+
+```bash
+docker exec -u node openclaw-lynj-openclaw-1 openclaw plugins enable slack
+cd /docker/openclaw-lynj && docker compose up -d        # or: docker restart openclaw-lynj-openclaw-1
+```
+
+This writes `plugins.entries.slack.enabled: true`. After restart the logs show:
+```
+[channels/slack] [default] starting provider
+[channels/slack] slack socket mode connected
+[channels/slack] slack channels resolved: #crm-openclaw→crm-openclaw (id:C0BAK76B47M)
+```
+Verify: `openclaw channels status --probe --json` → `running:true, connected:true, healthState:"healthy"`. Confirmed durable across a cold restart.
+
+**Key lesson:** bundled provider plugins auto-load, but **third-party channel plugins must be explicitly enabled** in `plugins.entries`. Note `plugins.entries.*.enabled` is a *protected config path* — you can't set it with `openclaw config patch` (it's blocked); use `openclaw plugins enable <id>`.
+
+---
+
+## Original investigation (kept for reference)
 
 ## Summary
 A Slack channel that is **correctly configured, enabled, with valid Socket Mode tokens, and whose plugin is loaded and healthy** is **never materialized by the gateway** at startup. No error, no skip reason — the channel simply doesn't exist at runtime.
