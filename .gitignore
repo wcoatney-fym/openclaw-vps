@@ -1,0 +1,13 @@
+# Never commit secrets
+.env
+.env.*
+*.key
+*.pem
+id_*
+*_rsa
+*_ed25519
+*.token
+secrets/
+# Only the redacted config belongs in the repo
+openclaw.json
+!config/openclaw.json.redacted

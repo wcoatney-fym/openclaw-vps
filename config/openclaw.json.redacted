@@ -1,0 +1,147 @@
+{
+  "update": {
+    "channel": "stable",
+    "checkOnStart": false
+  },
+  "browser": {
+    "headless": true,
+    "noSandbox": true,
+    "defaultProfile": "openclaw"
+  },
+  "commands": {
+    "bash": true,
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true
+  },
+  "tools": {
+    "profile": "full",
+    "elevated": {
+      "enabled": true,
+      "allowFrom": {
+        "webchat": []
+      }
+    }
+  },
+  "agents": {
+    "list": [
+      {
+        "id": "main",
+        "name": "main"
+      }
+    ],
+    "defaults": {
+      "workspace": "/data/.openclaw/workspace",
+      "model": {
+        "primary": "anthropic/claude-opus-4-8"
+      },
+      "models": {
+        "anthropic/claude-opus-4-6": {
+          "alias": "Claude Opus 4.6"
+        },
+        "anthropic/claude-sonnet-4-6": {
+          "alias": "Claude Sonnet 4.6"
+        },
+        "anthropic/claude-haiku-4-5": {
+          "alias": "Claude Haiku 4.5"
+        },
+        "anthropic/claude-opus-4-8": {}
+      },
+      "thinkingDefault": "low",
+      "skipBootstrap": true
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "controlUi": {},
+    "auth": {
+      "mode": "token",
+      "token": "<REDACTED>",
+      "rateLimit": {
+        "maxAttempts": 10,
+        "windowMs": 60000,
+        "lockoutMs": 300000
+      }
+    },
+    "remote": {
+      "token": "<REDACTED>"
+    },
+    "port": 18789,
+    "bind": "loopback",
+    "tailscale": {
+      "mode": "off",
+      "resetOnExit": false
+    }
+  },
+  "plugins": {
+    "bundledDiscovery": "compat",
+    "entries": {
+      "anthropic": {
+        "enabled": true
+      }
+    }
+  },
+  "skills": {
+    "load": {
+      "extraDirs": [
+        "/data/.openclaw/skills"
+      ]
+    },
+    "entries": {
+      "hhmail": {
+        "enabled": true
+      }
+    }
+  },
+  "models": {
+    "mode": "merge"
+  },
+  "messages": {
+    "groupChat": {
+      "visibleReplies": "message_tool"
+    }
+  },
+  "hooks": {
+    "token": "<REDACTED>"
+  },
+  "meta": {
+    "lastTouchedAt": "2026-06-16T04:38:15.941Z",
+    "lastTouchedVersion": "2026.5.28"
+  },
+  "session": {
+    "dmScope": "per-channel-peer"
+  },
+  "auth": {
+    "profiles": {
+      "anthropic:default": {
+        "provider": "anthropic",
+        "mode": "api_key"
+      }
+    }
+  },
+  "channels": {
+    "slack": {
+      "enabled": true,
+      "botToken": "<REDACTED>",
+      "appToken": "<REDACTED>",
+      "groupPolicy": "allowlist",
+      "channels": {
+        "#crm-openclaw": {
+          "enabled": true
+        }
+      },
+      "capabilities": {
+        "interactiveReplies": true
+      }
+    }
+  },
+  "bindings": [
+    {
+      "agentId": "main",
+      "match": {
+        "channel": "slack",
+        "accountId": "default"
+      }
+    }
+  ]
+}
