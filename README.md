@@ -47,9 +47,11 @@ cd /docker/openclaw-lynj && docker compose up -d
 ## Current status (2026-06-15)
 
 - ✅ Gateway **healthy** (`running`, config valid).
-- ✅ **Slack connected** (Socket Mode) → workspace *Team FYM*, bot `crmteambot`, channel `#crm-openclaw` (`C0BAK76B47M`). Survives cold restart; status `running/connected/healthy`.
+- ✅ **Slack fully working** (Socket Mode) → workspace *Team FYM*, bot `crmteambot`, channel `#crm-openclaw` (`C0BAK76B47M`). Bot replies to @mentions; survives cold restart; status `running/connected/healthy`.
 
-**Root cause of the earlier "won't connect":** the channel config was correct, but the third-party `@openclaw/slack` **plugin** must *also* be explicitly enabled (`plugins.entries.slack.enabled: true`, via `openclaw plugins enable slack`). Without it the plugin loads but the channel never materializes. Full write-up: [docs/slack-troubleshooting.md](docs/slack-troubleshooting.md).
+**Two fixes were needed (full write-up: [docs/slack-troubleshooting.md](docs/slack-troubleshooting.md)):**
+1. **Enable the channel plugin** — `plugins.entries.slack.enabled: true` (`openclaw plugins enable slack`). The third-party `@openclaw/slack` plugin doesn't auto-load; without this the channel never materializes.
+2. **Fix the channel allowlist key** — under `groupPolicy: allowlist`, the entry must be keyed by channel **id** (`C0BAK76B47M`) or bare name (`crm-openclaw`), **not** the `#`-prefixed display name. A `#`-prefixed key matches nothing at message time, so the gateway silently drops every message (`matchKey=none`).
 
 ## Repo layout
 

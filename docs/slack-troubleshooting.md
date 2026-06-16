@@ -21,6 +21,26 @@ Verify: `openclaw channels status --probe --json` → `running:true, connected:t
 
 **Key lesson:** bundled provider plugins auto-load, but **third-party channel plugins must be explicitly enabled** in `plugins.entries`. Note `plugins.entries.*.enabled` is a *protected config path* — you can't set it with `openclaw config patch` (it's blocked); use `openclaw plugins enable <id>`.
 
+### Then: the bot connected but never replied to @mentions — channel allowlist key bug
+After the plugin was enabled and the socket connected, @mentions in `#crm-openclaw` were received (`lastInboundAt` updated) but the agent never replied (`lastOutboundAt` null, no error, no agent turn). Debug logging (`OPENCLAW_LOG_LEVEL=debug`) revealed the gateway was **dropping every message**:
+
+```
+slack: drop channel C0BAK76B47M (groupPolicy=allowlist, matchKey=none matchSource=none)
+slack: drop message (channel not allowed)
+```
+
+With `groupPolicy: allowlist`, the allowlist entry was keyed **`"#crm-openclaw"`** (with a `#`), but at message time the channel arrives as id `C0BAK76B47M` / bare name `crm-openclaw` — the `#`-prefixed key matches neither (`matchKey=none`), so messages were filtered before reaching the agent. Fix — key the allowlist by channel **id** (rename-proof) and/or bare name:
+
+```bash
+openclaw config set channels.slack.channels '{"C0BAK76B47M":{"enabled":true},"crm-openclaw":{"enabled":true}}'
+docker restart openclaw-lynj-openclaw-1
+```
+
+Verified: bot now replies coherently to @mentions. **Lesson:** allowlist channel keys must match the channel id or bare name — never a `#`-prefixed display name.
+
+### Also note: shared-session queuing
+Slack routes to agent `main`, the **same session as the Control UI chat** (`agent:main:main`), serialized. If that session is busy (`state=processing` / `queued_behind_active_work`), mentions queue and aren't answered until it drains — and a message queued during active work is **not** retroactively answered. Re-post when the session is idle.
+
 ---
 
 ## Original investigation (kept for reference)

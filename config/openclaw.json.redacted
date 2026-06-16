@@ -82,7 +82,18 @@
       "slack": {
         "enabled": true
       }
-    }
+    },
+    "allow": [
+      "anthropic",
+      "browser",
+      "canvas",
+      "device-pair",
+      "file-transfer",
+      "memory-core",
+      "phone-control",
+      "slack",
+      "talk-voice"
+    ]
   },
   "skills": {
     "load": {
@@ -108,7 +119,7 @@
     "token": "<REDACTED>"
   },
   "meta": {
-    "lastTouchedAt": "2026-06-16T04:49:10.979Z",
+    "lastTouchedAt": "2026-06-16T05:26:23.676Z",
     "lastTouchedVersion": "2026.5.28"
   },
   "session": {
@@ -129,7 +140,10 @@
       "appToken": "<REDACTED>",
       "groupPolicy": "allowlist",
       "channels": {
-        "#crm-openclaw": {
+        "C0BAK76B47M": {
+          "enabled": true
+        },
+        "crm-openclaw": {
           "enabled": true
         }
       },
